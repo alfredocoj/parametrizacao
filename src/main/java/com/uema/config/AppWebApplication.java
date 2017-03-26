@@ -4,9 +4,13 @@ import com.uema.controllers.UemaControllers;
 import com.uema.parametrizacao.controllers.ParametrizacaoController;
 import com.uema.parametrizacao.models.ParametrizacaoModel;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.format.datetime.DateFormatterRegistrar;
@@ -16,9 +20,11 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 
+import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
@@ -27,24 +33,43 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import java.util.Locale;
 
+@Configuration
 @EnableWebMvc // Habilita funcionalidades como manipulação de json,
 @ComponentScan(basePackageClasses = {UemaControllers.class, ParametrizacaoController.class, ParametrizacaoModel.class})
-public class AppWebApplication extends WebMvcConfigurerAdapter {
+public class AppWebApplication extends WebMvcConfigurerAdapter implements ApplicationContextAware {
 
     private static final String PREFIX = "/WEB-INF/views/";
     private static final String SUFFIX = ".html";
     private static final String UTF    = "UTF-8";
+    private ApplicationContext applicationContext;
 
-    @Bean
-    public ViewResolver viewResolver() {
-        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-        resolver.setTemplateEngine(templateEngine());
-        resolver.setCharacterEncoding(UTF);
-        return resolver;
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    /* ******************************************************************* */
+    /*  GENERAL CONFIGURATION ARTIFACTS                                    */
+    /*  Static Resources, i18n Messages, Formatters (Conversion Service)   */
+    /* ******************************************************************* */
+
+    @Override
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+        super.addResourceHandlers(registry);
+        registry.addResourceHandler("/images/**").addResourceLocations("/images/");
+        registry.addResourceHandler("/css/**").addResourceLocations("/css/");
+        registry.addResourceHandler("/js/**").addResourceLocations("/js/");
     }
 
     @Bean
-    public TemplateEngine templateEngine() {
+    public ViewResolver viewResolver() {
+        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+        viewResolver.setTemplateEngine(templateEngine());
+        return viewResolver;
+    }
+
+    @Bean
+    public ITemplateEngine templateEngine() {
         SpringTemplateEngine engine = new SpringTemplateEngine();
         engine.setTemplateResolver(templateResolver());
         return engine;
@@ -97,5 +122,4 @@ public class AppWebApplication extends WebMvcConfigurerAdapter {
 
         return conversionService;
     }
-
 }

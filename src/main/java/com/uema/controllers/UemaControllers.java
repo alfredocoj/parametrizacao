@@ -2,6 +2,7 @@ package com.uema.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.transaction.Transactional;
@@ -11,7 +12,9 @@ import javax.transaction.Transactional;
 public class UemaControllers {
 
     @RequestMapping(value = "/")
-    public ModelAndView index(){
-        return new ModelAndView("index/index");
+    public ModelAndView index(@RequestParam("name") String name){
+        ModelAndView model = new ModelAndView("index/index");
+        model.addObject("name", name);
+        return model;
     }
 }
