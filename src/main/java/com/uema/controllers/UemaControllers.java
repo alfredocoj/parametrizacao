@@ -12,9 +12,9 @@ import javax.transaction.Transactional;
 public class UemaControllers {
 
     @RequestMapping(value = "/")
-    public ModelAndView index(@RequestParam("name") String name){
-        ModelAndView model = new ModelAndView("index/index");
-        model.addObject("name", name);
+    public ModelAndView index(){
+        ModelAndView model = new ModelAndView("index");
+        model.addObject("title", "Site Sample Java");
         return model;
     }
 }
