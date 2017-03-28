@@ -13,6 +13,7 @@ import javax.persistence.Column;
 @Entity(name="CategoriaRecurso")
 @Table(name="seg_categorias_recursos")
 public class CategoriaRecurso extends EntityBase {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ctr_id")

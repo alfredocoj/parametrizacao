@@ -5,7 +5,11 @@ import com.uema.admin.models.UsuarioModel;
 import com.uema.controllers.UemaControllers;
 import com.uema.parametrizacao.controllers.ParametrizacaoController;
 import com.uema.parametrizacao.models.ParametrizacaoModel;
+
+import nz.net.ultraq.thymeleaf.LayoutDialect;
+
 import org.springframework.beans.BeansException;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
@@ -24,13 +28,19 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
-import org.thymeleaf.ITemplateEngine;
+
+
+import org.thymeleaf.dialect.IDialect;
+
 import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.spring4.dialect.SpringStandardDialect;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 @Configuration
 @EnableWebMvc // Habilita funcionalidades como manipulação de json,
@@ -53,11 +63,20 @@ public class AppWebApplication extends WebMvcConfigurerAdapter implements Applic
     /* ******************************************************************* */
 
     @Override
-    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
-        super.addResourceHandlers(registry);
-        registry.addResourceHandler("/images/**").addResourceLocations("/images/");
-        registry.addResourceHandler("/css/**").addResourceLocations("/css/");
-        registry.addResourceHandler("/js/**").addResourceLocations("/js/");
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+        registry.addResourceHandler("/css/**").addResourceLocations("/resources/css/");
+        registry.addResourceHandler("/images/**").addResourceLocations("/resources/images/");
+        registry.addResourceHandler("/js/**").addResourceLocations("/resources/js/");
+        registry.addResourceHandler("/fonts/**").addResourceLocations("/resources/fonts/");
+    }
+
+    @Bean
+    public Set<IDialect> thymeleafDialects() {
+        Set<IDialect> dialects = new HashSet<IDialect>();
+        dialects.add(new SpringStandardDialect());
+        dialects.add(new LayoutDialect());
+        return dialects;
     }
 
     @Bean
@@ -68,7 +87,7 @@ public class AppWebApplication extends WebMvcConfigurerAdapter implements Applic
     }
 
     @Bean
-    public ITemplateEngine templateEngine() {
+    public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine engine = new SpringTemplateEngine();
         engine.setTemplateResolver(templateResolver());
         return engine;

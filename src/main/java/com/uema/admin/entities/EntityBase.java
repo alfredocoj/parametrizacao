@@ -8,6 +8,7 @@ import java.util.Date;
  */
 abstract public class EntityBase {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
