@@ -1,9 +1,10 @@
 package com.uema.config;
 
+import com.uema.admin.controllers.UsuarioController;
+import com.uema.admin.models.UsuarioModel;
 import com.uema.controllers.UemaControllers;
 import com.uema.parametrizacao.controllers.ParametrizacaoController;
 import com.uema.parametrizacao.models.ParametrizacaoModel;
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -23,9 +24,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
-
 import org.thymeleaf.ITemplateEngine;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
@@ -35,7 +34,7 @@ import java.util.Locale;
 
 @Configuration
 @EnableWebMvc // Habilita funcionalidades como manipulação de json,
-@ComponentScan(basePackageClasses = {UemaControllers.class, ParametrizacaoController.class, ParametrizacaoModel.class})
+@ComponentScan(basePackageClasses = {UemaControllers.class, ParametrizacaoController.class, ParametrizacaoModel.class, UsuarioController.class, UsuarioModel.class} )
 public class AppWebApplication extends WebMvcConfigurerAdapter implements ApplicationContextAware {
 
     private static final String PREFIX = "/WEB-INF/views/";

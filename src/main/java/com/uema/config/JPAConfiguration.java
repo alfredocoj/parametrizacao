@@ -1,5 +1,6 @@
 package com.uema.config;
 
+import org.springframework.beans.BeansException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -18,14 +19,16 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class JPAConfiguration {
 
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "12qwaszx";
+    private static final String USERNAME = "phpmyadmin";
+    private static final String PASSWORD = "some_pass";
+    private JpaTransactionManager transactionManager = new JpaTransactionManager();
+
 
     // Indicamos qual implementação de controle transacional queremos utilizar
     @Bean
-    public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(emf);
+    public PlatformTransactionManager transactionManager(EntityManagerFactory emf) throws BeansException {
+        this.transactionManager.setEntityManagerFactory(emf);
+        System.out.println("I got the factory!");
         return transactionManager;
     }
 
@@ -33,7 +36,7 @@ public class JPAConfiguration {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan(new String[]{"com.uema.parametrizacao.models"});
+        em.setPackagesToScan(new String[]{"com.uema.parametrizacao.models","com.uema.admin.entities"});
 
         // Definimos aqui a implementação da JPA escolhida para tratar com os
         // dados, no caso será o Hibernate
@@ -50,7 +53,7 @@ public class JPAConfiguration {
     private DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/parametrizacao");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/gestor");
         dataSource.setUsername(USERNAME);
         dataSource.setPassword(PASSWORD);
 
