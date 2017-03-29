@@ -12,6 +12,8 @@ public class UemaControllers {
 
     @RequestMapping(value = "/")
     public ModelAndView index(){
-        return new ModelAndView("index/index");
+        ModelAndView model = new ModelAndView("index");
+        model.addObject("title", "Sample Java");
+        return model;
     }
 }

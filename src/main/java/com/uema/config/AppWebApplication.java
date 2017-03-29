@@ -1,12 +1,21 @@
 package com.uema.config;
 
+import com.uema.admin.controllers.UsuarioController;
+import com.uema.admin.models.UsuarioModel;
 import com.uema.controllers.UemaControllers;
 import com.uema.parametrizacao.controllers.ParametrizacaoController;
 import com.uema.parametrizacao.models.ParametrizacaoModel;
 
+import nz.net.ultraq.thymeleaf.LayoutDialect;
+
+import org.springframework.beans.BeansException;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.format.datetime.DateFormatterRegistrar;
@@ -16,35 +25,69 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 
-import org.thymeleaf.TemplateEngine;
+
+import org.thymeleaf.dialect.IDialect;
+
 import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.spring4.dialect.SpringStandardDialect;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
+@Configuration
 @EnableWebMvc // Habilita funcionalidades como manipulação de json,
-@ComponentScan(basePackageClasses = {UemaControllers.class, ParametrizacaoController.class, ParametrizacaoModel.class})
-public class AppWebApplication extends WebMvcConfigurerAdapter {
+@ComponentScan(basePackageClasses = {UemaControllers.class, ParametrizacaoController.class, ParametrizacaoModel.class, UsuarioController.class, UsuarioModel.class} )
+public class AppWebApplication extends WebMvcConfigurerAdapter implements ApplicationContextAware {
 
     private static final String PREFIX = "/WEB-INF/views/";
     private static final String SUFFIX = ".html";
     private static final String UTF    = "UTF-8";
+    private ApplicationContext applicationContext;
 
-    @Bean
-    public ViewResolver viewResolver() {
-        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-        resolver.setTemplateEngine(templateEngine());
-        resolver.setCharacterEncoding(UTF);
-        return resolver;
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    /* ******************************************************************* */
+    /*  GENERAL CONFIGURATION ARTIFACTS                                    */
+    /*  Static Resources, i18n Messages, Formatters (Conversion Service)   */
+    /* ******************************************************************* */
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+        registry.addResourceHandler("/css/**").addResourceLocations("/resources/css/");
+        registry.addResourceHandler("/images/**").addResourceLocations("/resources/images/");
+        registry.addResourceHandler("/js/**").addResourceLocations("/resources/js/");
+        registry.addResourceHandler("/fonts/**").addResourceLocations("/resources/fonts/");
     }
 
     @Bean
-    public TemplateEngine templateEngine() {
+    public Set<IDialect> thymeleafDialects() {
+        Set<IDialect> dialects = new HashSet<IDialect>();
+        dialects.add(new SpringStandardDialect());
+        dialects.add(new LayoutDialect());
+        return dialects;
+    }
+
+    @Bean
+    public ViewResolver viewResolver() {
+        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+        viewResolver.setTemplateEngine(templateEngine());
+        return viewResolver;
+    }
+
+    @Bean
+    public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine engine = new SpringTemplateEngine();
         engine.setTemplateResolver(templateResolver());
         return engine;
@@ -97,5 +140,4 @@ public class AppWebApplication extends WebMvcConfigurerAdapter {
 
         return conversionService;
     }
-
 }
