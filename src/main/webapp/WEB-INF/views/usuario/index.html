@@ -7,11 +7,23 @@
 </head>
 <body>
 <div th:substituteby="layout/navbar :: navbar"></div>
-<div class="container">
+<div class="container" ng-app="usuarioApp" ng-controller="usuarioController">
     <section layout:fragment="content">
+        <p>Name : <input type="text" ng-model="name"></p>
+        Nome: {{name}}
 
+        <table>
+            <tr ng-repeat="x in names">
+                <td>{{ x.nome }}</td>
+            </tr>
+        </table>
     </section>
 </div>
-<div th:substituteby="layout/footer :: footer"></div>
+<div th:substituteby="layout/footer :: footer">
+</div>
+<!-- ANGULAR MODULES -->
+<script src="/resources/js/usuario/app.js"></script>
+<!-- ANGULAR CONTROLLERS -->
+<script src="/resources/js/usuario/controller.js"></script>
 </body>
 </html>
