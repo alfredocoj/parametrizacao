@@ -19,10 +19,11 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class JPAConfiguration {
 
-    private static final String USERNAME = "phpmyadmin";
-    private static final String PASSWORD = "some_pass";
-    private JpaTransactionManager transactionManager = new JpaTransactionManager();
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "12qwaszx";
+    private static final String DATABASE = "parametrizacao";
 
+    private JpaTransactionManager transactionManager = new JpaTransactionManager();
 
     // Indicamos qual implementação de controle transacional queremos utilizar
     @Bean
@@ -36,27 +37,24 @@ public class JPAConfiguration {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan(new String[]{"com.uema.parametrizacao.models","com.uema.admin.entities"});
+        em.setPackagesToScan(new String[]{"com.uema.parametrizacao.entities","com.uema.admin.entities"});
 
         // Definimos aqui a implementação da JPA escolhida para tratar com os
         // dados, no caso será o Hibernate
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(additionalProperties());
-
         return em;
     }
 
-    // Método responsável pela configuração de conexão com o
-    // banco de dados
+    // Método responsável pela configuração de conexão com o banco de dados
     @Bean
     private DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/gestor");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/" + DATABASE);
         dataSource.setUsername(USERNAME);
         dataSource.setPassword(PASSWORD);
-
         return dataSource;
     }
 
@@ -67,5 +65,4 @@ public class JPAConfiguration {
         properties.setProperty("hibernate.show_sql", "true");
         return properties;
     }
-
 }

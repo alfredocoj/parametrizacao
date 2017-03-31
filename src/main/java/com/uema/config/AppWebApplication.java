@@ -29,7 +29,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 
-
 import org.thymeleaf.dialect.IDialect;
 
 import org.thymeleaf.spring4.SpringTemplateEngine;
@@ -50,11 +49,16 @@ public class AppWebApplication extends WebMvcConfigurerAdapter implements Applic
     private static final String PREFIX = "/WEB-INF/views/";
     private static final String SUFFIX = ".html";
     private static final String UTF    = "UTF-8";
+
     private ApplicationContext applicationContext;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
     /* ******************************************************************* */
@@ -64,16 +68,28 @@ public class AppWebApplication extends WebMvcConfigurerAdapter implements Applic
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
-        registry.addResourceHandler("/css/**").addResourceLocations("/resources/css/");
-        registry.addResourceHandler("/images/**").addResourceLocations("/resources/images/");
-        registry.addResourceHandler("/js/**").addResourceLocations("/resources/js/");
-        registry.addResourceHandler("/fonts/**").addResourceLocations("/resources/fonts/");
+        registry.addResourceHandler("/resources/**")
+                .addResourceLocations("/resources/");
+
+        registry.addResourceHandler("/css/**")
+                .addResourceLocations("/resources/css/");
+
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("/resources/images/");
+
+        registry.addResourceHandler("/js/**")
+                .addResourceLocations("/resources/js/");
+
+        registry.addResourceHandler("/fonts/**")
+                .addResourceLocations("/resources/fonts/");
+
+        registry.addResourceHandler("/bower_components/**")
+                .addResourceLocations("/resources/bower_components/");
     }
 
     @Bean
     public Set<IDialect> thymeleafDialects() {
-        Set<IDialect> dialects = new HashSet<IDialect>();
+        Set<IDialect> dialects = new HashSet<>();
         dialects.add(new SpringStandardDialect());
         dialects.add(new LayoutDialect());
         return dialects;
@@ -120,7 +136,7 @@ public class AppWebApplication extends WebMvcConfigurerAdapter implements Applic
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource bundle = new ReloadableResourceBundleMessageSource();
         bundle.setBasename("/WEB-INF/i18n/messages/");
-        bundle.setDefaultEncoding("UTF-8");
+        bundle.setDefaultEncoding(UTF);
         bundle.setCacheSeconds(1); // Permite atualizar o cache a cada segundo, para não precisar
         // subir o servidor todo o momento
 
