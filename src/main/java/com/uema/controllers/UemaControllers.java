@@ -13,7 +13,8 @@ public class UemaControllers {
     @RequestMapping(value = "/")
     public ModelAndView index(){
         ModelAndView model = new ModelAndView("index");
-        model.addObject("title", "Sample Java");
+        String titlo = "Sample Java";
+        model.addObject("title", titlo);
         return model;
     }
 }
