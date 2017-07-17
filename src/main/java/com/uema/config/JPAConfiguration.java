@@ -1,7 +1,10 @@
 package com.uema.config;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -17,11 +20,11 @@ import java.util.Properties;
 // Permite o controle transacional. Annotation definida pelo Spring
 //
 @EnableTransactionManagement
+@PropertySource("classpath:database.properties")
 public class JPAConfiguration {
 
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "12qwaszx";
-    private static final String DATABASE = "parametrizacao";
+    @Autowired
+    private Environment env;
 
     private JpaTransactionManager transactionManager = new JpaTransactionManager();
 
@@ -51,18 +54,18 @@ public class JPAConfiguration {
     @Bean
     private DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/" + DATABASE);
-        dataSource.setUsername(USERNAME);
-        dataSource.setPassword(PASSWORD);
+        dataSource.setDriverClassName(env.getProperty("database.driver"));
+        dataSource.setUrl(env.getProperty("database.url"));
+        dataSource.setUsername(env.getProperty("database.user"));
+        dataSource.setPassword(env.getProperty("database.password"));
         return dataSource;
     }
 
     private Properties additionalProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
-        properties.setProperty("hibernate.show_sql", "true");
+        properties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+        properties.setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
         return properties;
     }
 }
