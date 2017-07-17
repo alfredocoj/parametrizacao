@@ -138,10 +138,17 @@
             <version>4.1.0.RELEASE</version>
         </dependency>
 
+        <!-- DataBases -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.15</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4.1212</version>
         </dependency>
 
         <!-- Validação com Hibernate -->
