@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by alfredo on 27/03/17.
@@ -41,7 +42,7 @@ public class UsuarioController {
     @ResponseBody
     public Object listar(HttpServletRequest request, HttpServletResponse response) throws JSONException {
         System.out.println("listar");
-        return ResponseSig.success((Collection<? extends EntityBase>) usuarioModel.getAll(new Usuario()),200);
-        //return usuarioModel.getAll(new Usuario());
+        List<EntityBase> usuarios = usuarioModel.getAll(new Usuario());
+        return ResponseSig.success(usuarios,200);
     }
 }
