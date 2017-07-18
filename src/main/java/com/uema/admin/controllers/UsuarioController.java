@@ -37,12 +37,12 @@ public class UsuarioController {
         return mv;
     }
 
-    @ResponseStatus(value=HttpStatus.OK)
-    @RequestMapping(value= "/admin/usuario/listar", method = RequestMethod.GET, produces = "application/json")
+    //@ResponseStatus(value=HttpStatus.OK)
+    @RequestMapping(value= "/admin/usuario/listar", method = RequestMethod.GET)
     @ResponseBody
     public Object listar(HttpServletRequest request, HttpServletResponse response) throws JSONException {
         System.out.println("listar");
         List<EntityBase> usuarios = usuarioModel.getAll(new Usuario());
-        return ResponseSig.success(usuarios,200);
+        return usuarios;
     }
 }

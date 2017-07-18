@@ -1,5 +1,7 @@
 package com.uema.admin.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +95,7 @@ public class Usuario extends EntityBase {
         this.usrAtivo = usrAtivo;
     }
 
+    @JsonBackReference
     public List<Perfil> getPerfil() {
         return perfil;
     }
